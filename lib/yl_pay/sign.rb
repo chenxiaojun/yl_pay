@@ -7,8 +7,6 @@ module YlPay
 
     def self.verify?(string, sign)
       rsa = OpenSSL::PKey::RSA.new(File.read(YlPay.payeco_rsa_public_key))
-      p string
-      p sign
       rsa.verify(OpenSSL::Digest::MD5.new, Base64.strict_decode64(sign), string)
     end
   end
