@@ -1,21 +1,19 @@
 module YlPay
-  class Result < ::Hash
-    SUCCESS_FLAG = 'SUCCESS'.freeze
+  class Result
+    attr_accessor :code, :msg, :body
 
     def initialize(result)
-      super nil
-
-      self[:raw] = result
-
-      if result['xml'].class == Hash
-        result['xml'].each_pair do |k, v|
-          self[k] = v
-        end
-      end
+      @code = result['response']['head']['retCode']
+      @msg = result['response']['head']['retMsg']
+      @body = result['response']['body']
     end
 
     def success?
-      self['return_code'] == SUCCESS_FLAG && self['result_code'] == SUCCESS_FLAG
+      code.eql?('0000')
+    end
+
+    def failure_data
+      {code: code, msg: msg}
     end
   end
 end

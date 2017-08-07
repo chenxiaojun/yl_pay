@@ -1,9 +1,11 @@
 require 'faraday'
+require 'json'
 require 'active_support/core_ext/hash/conversions'
 
 module YlPay
   class Service
     PAY_URI = 'https://testmobile.payeco.com/ppi/merchant/itf.do'
+    H5_URI = 'https://testmobile.payeco.com/ppi/h5/plugin/itf.do'
 
     INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip]
     def self.generate_order_url(params, options = {})
@@ -19,7 +21,21 @@ module YlPay
         misc_data: options.delete(:misc_data) || '13922897656|0||张三|440121197511140912|62220040001154868428||PAYECO20151028543445||2|',
       }.merge(params)
       check_required_options(params, INVOKE_ORDER_REQUIRED_FIELDS)
-      YlPay::Result.new(Hash.from_xml(invoke_remote(PAY_URI, make_payload(params))))
+      result = YlPay::Result.new(Hash.from_xml(invoke_remote(PAY_URI, make_payload(params))))
+      return JSON(result.failure_data) unless result.success?
+      back_sign = check_back_sign(result.body)
+      return JSON({code: 'E102', data: '签名验证失败'}) unless back_sign
+      pay_url(back_sign[0] + "&Sign=#{back_sign[1]}")
+    end
+
+    # 根据返回回来的参数，生成去支付页面的url
+    def self.pay_url(params, options = {pay_way: 'h5_pay_url'})
+      pay_way = options.delete(:pay_way)
+      send(pay_way, params)
+    end
+
+    def self.h5_pay_url(params)
+      H5_URI + '?tradeId=h5Init' + "&#{params}"
     end
 
     class << self
@@ -42,8 +58,13 @@ module YlPay
 
       def invoke_remote(url, payload, options = {})
         remote_url = url + "?#{payload}"
-        p remote_url
         Faraday.get(remote_url).body
+      end
+
+      def check_back_sign(data)
+        sign = data.delete('Sign')
+        back_sign = YlPay::Utils.back_sign(data)
+        YlPay::Sign.verify?(back_sign, sign) ? [back_sign, sign]  : false
       end
     end
   end
