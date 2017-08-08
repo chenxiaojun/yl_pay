@@ -27,14 +27,14 @@ YlPay.payeco_url = '' # 易联接口URL
 YlPay.mch_rsa_private_key = '' # 商户私钥路径
 YlPay.payeco_rsa_public_key = '' # 易联公钥路径 
 YlPay.merchant_id = '' # 商户ID
-YlPay.notify_url = true # 通知服务器地址
-YlPay.return_url = true # 重定向地址
+YlPay.notify_url = '' # 通知服务器地址
+YlPay.return_url = '' # 重定向地址
 
 `YlPay::Service.generate_order_url params` will create an payment request and return a pay url.
 
 # required fields
 params = {
-  amount: '1.11',
+  amount: '',
   order_desc: '',
   client_ip: '',
   merch_order_id: '' # 商户订单ID
