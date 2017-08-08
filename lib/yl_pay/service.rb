@@ -33,7 +33,7 @@ module YlPay
 
       def set_params(params, options)
         {
-          version: YlPay::VERSION,
+          version: YlPay.version,
           merchant_id: options.delete(:merchant_id) || YlPay.merchant_id,
           notify_url: options.delete(:notify_url) || YlPay.notify_url,
           return_url: options.delete(:return_url) || YlPay.return_url,

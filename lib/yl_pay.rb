@@ -14,5 +14,10 @@ module YlPay
     def debug_mode?
       @debug_mode
     end
+
+    # 对应的调用易联支付那边的版本号
+    def version
+      '2.0.0'
+    end
   end
 end
