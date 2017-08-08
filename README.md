@@ -1,4 +1,4 @@
-易联支付 YlPay Ruby SDK Gem
+易联支付 Ruby SDK Gem
 
 ## Installation
 
@@ -26,9 +26,9 @@ Create `config/initializers/yl_pay.rb` and put following configurations into it.
 YlPay.payeco_url = '' # 易联接口URL
 YlPay.mch_rsa_private_key = '' # 商户私钥路径
 YlPay.payeco_rsa_public_key = '' # 易联公钥路径 
-WxPay.merchant_id = '' # 商户ID
-WxPay.notify_url = true # 通知服务器地址
-WxPay.return_url = true # 重定向地址
+YlPay.merchant_id = '' # 商户ID
+YlPay.notify_url = true # 通知服务器地址
+YlPay.return_url = true # 重定向地址
 
 `YlPay::Service.generate_order_url params` will create an payment request and return a pay url.
 
