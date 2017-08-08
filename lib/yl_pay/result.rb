@@ -12,8 +12,8 @@ module YlPay
       code.eql?('0000')
     end
 
-    def failure_data
-      {code: code, msg: msg}
+    def failure
+      { code: code, msg: msg }
     end
   end
 end

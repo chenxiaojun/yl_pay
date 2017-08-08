@@ -9,7 +9,7 @@ module YlPay
   @debug_mode = true
 
   class << self
-    attr_accessor :mch_id, :notify_url, :return_url, :payeco_url, :mch_rsa_private_key, :payeco_rsa_public_key
+    attr_accessor :merchant_id, :notify_url, :return_url, :payeco_url, :mch_rsa_private_key, :payeco_rsa_public_key
 
     def debug_mode?
       @debug_mode

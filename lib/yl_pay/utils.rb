@@ -3,7 +3,7 @@ module YlPay
 
   class Utils
     def self.param_sign(params)
-      "Version=#{params[:version]}&MerchantId=#{params[:mch_id]}&MerchOrderId=#{params[:order_id]}&"\
+      "Version=#{params[:version]}&MerchantId=#{params[:merchant_id]}&MerchOrderId=#{params[:merch_order_id]}&"\
       "Amount=#{params[:amount]}&OrderDesc=#{params[:order_desc]}&TradeTime=#{params[:trade_time]}&ExpTime=#{params[:exp_time]}&"\
       "NotifyUrl=#{params[:notify_url]}&ReturnUrl=#{params[:return_url]}&ExtData=#{params[:ext_data]}&"\
       "MiscData=#{params[:misc_data]}&NotifyFlag=#{params[:notify_flag]}&ClientIp=#{params[:client_ip]}"
@@ -27,13 +27,6 @@ module YlPay
       new_params[:notify_url] = CGI.escape(new_params[:notify_url]) if new_params.key?(:notify_url)
       new_params[:return_url] = CGI.escape(new_params[:return_url]) if new_params.key?(:return_url)
       param_sign new_params
-    end
-
-    # 商户订单号
-    def self.mch_order_id
-      t = Time.now
-      order_id = t.strftime('%Y%m%d%H%M%S') + t.nsec.to_s
-      order_id.ljust(24, rand(10).to_s)
     end
   end
 end

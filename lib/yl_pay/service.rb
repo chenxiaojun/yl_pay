@@ -4,25 +4,15 @@ require 'active_support/core_ext/hash/conversions'
 
 module YlPay
   class Service
-    PAY_URI = 'https://testmobile.payeco.com/ppi/merchant/itf.do'
-    H5_URI = 'https://testmobile.payeco.com/ppi/h5/plugin/itf.do'
+    H5_URI = '/ppi/h5/plugin/itf.do'
+    AUTHORIZE_URI = '/ppi/merchant/itf.do'
 
-    INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip]
+    INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip, :merch_order_id]
     def self.generate_order_url(params, options = {})
-      params = {
-        version: YlPay::VERSION,
-        mch_id: options.delete(:mch_id) || YlPay.mch_id,
-        notify_url: options.delete(:notify_url) || YlPay.notify_url,
-        trade_code: options.delete(:trade_code) || 'PayOrder',
-        ext_data: options.delete(:ext_data) || 'H5测试',
-        exp_time: options.delete(:exp_time) || '',
-        notify_flag: options.delete(:notify_flag) || '0',
-        order_id: options.delete(:order_id) || YlPay::Utils.mch_order_id,
-        misc_data: options.delete(:misc_data) || '13922897656|0||张三|440121197511140912|62220040001154868428||PAYECO20151028543445||2|',
-      }.merge(params)
       check_required_options(params, INVOKE_ORDER_REQUIRED_FIELDS)
-      result = YlPay::Result.new(Hash.from_xml(invoke_remote(PAY_URI, make_payload(params))))
-      return JSON(result.failure_data) unless result.success?
+      params = set_params(params, options)
+      result = YlPay::Result.new(Hash.from_xml(invoke_remote(YlPay.payeco_url + AUTHORIZE_URI, make_payload(params))))
+      return JSON(result.failure) unless result.success?
       back_sign = check_back_sign(result.body)
       return JSON({code: 'E102', data: '签名验证失败'}) unless back_sign
       pay_url(back_sign[0] + "&Sign=#{back_sign[1]}")
@@ -35,11 +25,25 @@ module YlPay
     end
 
     def self.h5_pay_url(params)
-      H5_URI + '?tradeId=h5Init' + "&#{params}"
+      YlPay.payeco_url + H5_URI + '?tradeId=h5Init' + "&#{params}"
     end
 
     class << self
       private
+
+      def set_params(params, options)
+        {
+          version: YlPay::VERSION,
+          merchant_id: options.delete(:merchant_id) || YlPay.merchant_id,
+          notify_url: options.delete(:notify_url) || YlPay.notify_url,
+          return_url: options.delete(:return_url) || YlPay.return_url,
+          trade_code: options.delete(:trade_code) || 'PayOrder',
+          ext_data: options.delete(:ext_data) || 'H5测试',
+          exp_time: options.delete(:exp_time) || '',
+          notify_flag: options.delete(:notify_flag) || '0',
+          misc_data: options.delete(:misc_data) || '',
+        }.merge(params)
+      end
 
       def check_required_options(options, names)
         return unless YlPay.debug_mode?

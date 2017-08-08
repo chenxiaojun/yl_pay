@@ -1,16 +1,10 @@
-# YlPay
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/yl_pay`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+易联支付 YlPay Ruby SDK Gem
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-```ruby
-gem 'yl_pay'
-```
+    gem 'yl_pay'
 
 And then execute:
 
@@ -21,21 +15,39 @@ Or install it yourself as:
     $ gem install yl_pay
 
 ## Usage
+### H5 Payment
 
-TODO: Write usage instructions here
+### Config
 
-## Development
+Create `config/initializers/yl_pay.rb` and put following configurations into it.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+```ruby
+# required
+YlPay.payeco_url = '' # 易联接口URL
+YlPay.mch_rsa_private_key = '' # 商户私钥路径
+YlPay.payeco_rsa_public_key = '' # 易联公钥路径 
+WxPay.merchant_id = '' # 商户ID
+WxPay.notify_url = true # 通知服务器地址
+WxPay.return_url = true # 重定向地址
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+`YlPay::Service.generate_order_url params` will create an payment request and return a pay url.
+
+# required fields
+params = {
+  amount: '1.11',
+  order_desc: '',
+  client_ip: '',
+  merch_order_id: '' # 商户订单ID
+}
+
+# call generate_order_url
+pay_url = YlPay::Service.generate_order_url params
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/yl_pay. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
+1. Fork it ( https://github.com/chenxiaojun/yl_pay/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
