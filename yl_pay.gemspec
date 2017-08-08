@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "An unofficial simple yilian pay gem"
   spec.description   = "An unofficial simple yilian pay gem"
-  spec.homepage      = "https://github.com/chenxiaojun"
+  spec.homepage      = "https://github.com/chenxiaojun/yl_pay"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
