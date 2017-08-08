@@ -7,7 +7,7 @@ module YlPay
     H5_URI = '/ppi/h5/plugin/itf.do'
     AUTHORIZE_URI = '/ppi/merchant/itf.do'
 
-    INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip, :merch_order_id]
+    INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip, :merch_order_id, :c]
     def self.generate_order_url(params, options = {})
       check_required_options(params, INVOKE_ORDER_REQUIRED_FIELDS)
       params = set_params(params, options)
@@ -15,7 +15,8 @@ module YlPay
       return JSON(result.failure) unless result.success?
       back_sign = check_back_sign(result.body)
       return JSON({code: 'E102', data: '签名验证失败'}) unless back_sign
-      pay_url(back_sign[0] + "&Sign=#{back_sign[1]}")
+      url = pay_url(back_sign[0] + "&Sign=#{back_sign[1]}")
+      JSON(result.success(url))
     end
 
     # 根据返回回来的参数，生成去支付页面的url
@@ -38,10 +39,8 @@ module YlPay
           notify_url: options.delete(:notify_url) || YlPay.notify_url,
           return_url: options.delete(:return_url) || YlPay.return_url,
           trade_code: options.delete(:trade_code) || 'PayOrder',
-          ext_data: options.delete(:ext_data) || 'H5测试',
           exp_time: options.delete(:exp_time) || '',
-          notify_flag: options.delete(:notify_flag) || '0',
-          misc_data: options.delete(:misc_data) || '',
+          notify_flag: options.delete(:notify_flag) || '0'
         }.merge(params)
       end
 

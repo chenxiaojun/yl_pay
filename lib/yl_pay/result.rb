@@ -15,5 +15,9 @@ module YlPay
     def failure
       { code: code, msg: msg }
     end
+
+    def success(data)
+      { code: '0000', msg: 'ok', body: data }
+    end
   end
 end

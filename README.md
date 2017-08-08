@@ -37,7 +37,14 @@ params = {
   amount: '',
   order_desc: '',
   client_ip: '',
-  merch_order_id: '' # 商户订单ID
+  merch_order_id: '', # 商户订单ID
+  trade_time: '' # 交易时间的格式 time.strftime('%Y%m%d%H%M%S')
+}
+
+# optional fields 
+params = {
+  ext_data: '', # 商户自定义传递的参数, 异步通知会返回回去
+  misc_data: '' # 默认的银行卡参数
 }
 
 # call generate_order_url
