@@ -7,7 +7,7 @@ module YlPay
     H5_URI = '/ppi/h5/plugin/itf.do'
     AUTHORIZE_URI = '/ppi/merchant/itf.do'
 
-    INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip, :merch_order_id, :c]
+    INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip, :merch_order_id, :trade_time]
     def self.generate_order_url(params, options = {})
       check_required_options(params, INVOKE_ORDER_REQUIRED_FIELDS)
       params = set_params(params, options)
