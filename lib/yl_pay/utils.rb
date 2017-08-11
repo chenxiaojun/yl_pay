@@ -14,6 +14,12 @@ module YlPay
       "Amount=#{params['Amount']}&TradeTime=#{params['TradeTime']}&OrderId=#{params['OrderId']}&VerifyTime=#{params['VerifyTime']}"
     end
 
+    def self.notify_sign(params)
+      "Version=#{params['Version']}&MerchantId=#{params['MerchantId']}&MerchOrderId=#{params['MerchOrderId']}&"\
+      "Amount=#{params['Amount']}&ExtData=#{params['ExtData']}&OrderId=#{params['OrderId']}&Status=#{params['Status']}&"\
+      "PayTime=#{params['PayTime']}&SettleDate=#{params['SettleDate']}"
+    end
+
     # 提交参数中包含中文的需要做base64转码
     def self.uri_params(params)
       container = [:order_desc, :ext_data, :misc_data]

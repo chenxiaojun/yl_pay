@@ -29,6 +29,12 @@ module YlPay
       YlPay.payeco_url + H5_URI + '?tradeId=h5Init' + "&#{params}"
     end
 
+    def self.check_notify_sign(params)
+      sign = params.delete('Sign')
+      notify_sign = YlPay::Utils.notify_sign(params)
+      YlPay::Sign.verify?(notify_sign, sign)
+    end
+
     class << self
       private
 
