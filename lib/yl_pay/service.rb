@@ -32,6 +32,7 @@ module YlPay
     def self.check_notify_sign(params)
       sign = params.delete('Sign')
       notify_sign = YlPay::Utils.notify_sign(params)
+      warn("NOTIFY_SIGN: #{notify_sign}&Sign=#{sign}")
       YlPay::Sign.verify?(notify_sign, sign)
     end
 
@@ -67,6 +68,7 @@ module YlPay
 
       def invoke_remote(url, payload, options = {})
         remote_url = url + "?#{payload}"
+        warn("INVOKE_REMOTE: #{remote_url}")
         Faraday.get(remote_url).body
       end
 
