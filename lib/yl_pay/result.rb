@@ -19,5 +19,9 @@ module YlPay
     def success(data)
       { code: '0000', msg: 'ok', body: data }
     end
+
+    def sign_error
+      {code: 'E102', msg: '签名验证失败'}
+    end
   end
 end

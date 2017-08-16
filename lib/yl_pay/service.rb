@@ -12,11 +12,17 @@ module YlPay
       check_required_options(params, INVOKE_ORDER_REQUIRED_FIELDS)
       params = set_params(params, options)
       result = YlPay::Result.new(Hash.from_xml(invoke_remote(YlPay.payeco_url + AUTHORIZE_URI, make_payload(params))))
-      return JSON(result.failure) unless result.success?
+      JSON(parse_result(result))
+    end
+
+    def self.parse_result(result)
+      return result.failure unless result.success?
+
       back_sign = check_back_sign(result.body)
-      return JSON({code: 'E102', data: '签名验证失败'}) unless back_sign
+      return result.sign_error unless back_sign
+
       url = pay_url(back_sign[0] + "&Sign=#{back_sign[1]}")
-      JSON(result.success(url))
+      result.success(url)
     end
 
     # 根据返回回来的参数，生成去支付页面的url
@@ -32,7 +38,6 @@ module YlPay
     def self.check_notify_sign(params)
       sign = params.delete('Sign')
       notify_sign = YlPay::Utils.notify_sign(params)
-      warn("NOTIFY_SIGN: #{notify_sign}&Sign=#{sign}")
       YlPay::Sign.verify?(notify_sign, sign)
     end
 
@@ -66,9 +71,8 @@ module YlPay
         "TradeCode=#{trade_code}&" + YlPay::Utils.uri_params(params) + "&Sign=#{rsa_sign}"
       end
 
-      def invoke_remote(url, payload, options = {})
+      def invoke_remote(url, payload)
         remote_url = url + "?#{payload}"
-        warn("INVOKE_REMOTE: #{remote_url}")
         Faraday.get(remote_url).body
       end
 
