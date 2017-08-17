@@ -21,7 +21,7 @@ module YlPay
     end
 
     def sign_error
-      {code: 'E102', msg: '签名验证失败'}
+      { code: 'E102', msg: '签名验证失败' }
     end
   end
 end

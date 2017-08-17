@@ -4,8 +4,8 @@ require 'active_support/core_ext/hash/conversions'
 
 module YlPay
   class Service
-    H5_URI = '/ppi/h5/plugin/itf.do'
-    AUTHORIZE_URI = '/ppi/merchant/itf.do'
+    H5_URI = '/ppi/h5/plugin/itf.do'.freeze
+    AUTHORIZE_URI = '/ppi/merchant/itf.do'.freeze
 
     INVOKE_ORDER_REQUIRED_FIELDS = [:amount, :order_desc, :client_ip, :merch_order_id, :trade_time]
     def self.generate_order_url(params, options = {})
@@ -26,7 +26,7 @@ module YlPay
     end
 
     # 根据返回回来的参数，生成去支付页面的url
-    def self.pay_url(params, options = {pay_way: 'h5_pay_url'})
+    def self.pay_url(params, options = { pay_way: 'h5_pay_url' })
       pay_way = options.delete(:pay_way)
       send(pay_way, params)
     end
@@ -60,7 +60,7 @@ module YlPay
         return unless YlPay.debug_mode?
 
         names.each do |name|
-          warn("YlPay Warn: missing required option: #{name}") unless options.has_key?(name)
+          warn("YlPay Warn: missing required option: #{name}") unless options.key?(name)
         end
       end
 
@@ -79,7 +79,7 @@ module YlPay
       def check_back_sign(data)
         sign = data.delete('Sign')
         back_sign = YlPay::Utils.back_sign(data)
-        YlPay::Sign.verify?(back_sign, sign) ? [back_sign, sign]  : false
+        YlPay::Sign.verify?(back_sign, sign) ? [back_sign, sign] : false
       end
     end
   end

@@ -49,7 +49,12 @@ params = {
 
 # call generate_order_url
 pay_url = YlPay::Service.generate_order_url params
+
+# verify notify or return sign
+YlPay::Service.check_notify_sign(params)
 ```
+
+
 
 ## Contributing
 
